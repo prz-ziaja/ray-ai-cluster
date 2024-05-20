@@ -3,6 +3,9 @@
 notebooks/cifar/*
 data/*
 .idea/
+# Secrets
+deployment/.env
+src/cifar/constants/secret.py
 # Template
 # Byte-compiled / optimized / DLL files
 __pycache__/
