@@ -1,0 +1,4 @@
+FROM rayproject/ray
+
+COPY ../conda-environments . 
+RUN ./conda-environments/create-conda-envs.sh

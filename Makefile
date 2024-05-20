@@ -1,0 +1,7 @@
+organize-dirs:
+	mkdir -p data/mlflow_minio data/mlflow_postgres data/tensorboard
+
+start-deployment:
+	docker compose -f deployment/docker-compose.yaml --env-file deployment/.env up -d --build
+stop-deployment:
+	docker compose -f deployment/docker-compose.yaml --env-file deployment/.env stop
