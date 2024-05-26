@@ -15,8 +15,7 @@ from ray.train.lightning import (
 from ray.train.torch import TorchConfig, TorchTrainer
 from ray.tune.schedulers import ASHAScheduler
 
-import cifar
-
+import utils as u
 
 def build_train_func(model_module, data_module, data_location, experiment_name):
     def train_func(config):
@@ -69,9 +68,7 @@ def tune_hms_asha(ray_trainer, search_space, num_epochs, num_samples=10):
 
 
 def main(module_name):
-    pipeline_config_module = importlib.import_module(
-        f"cifar.pipeline_configs.{module_name}"
-    )
+    pipeline_config_module = importlib.import_module(module_name)
     model_name = pipeline_config_module.training["model_name"]
     dataset_name = pipeline_config_module.preprocessing["dataset_name"]
     model_hparams = pipeline_config_module.training["hparams"]
@@ -118,5 +115,6 @@ def main(module_name):
 
 
 if __name__ == "__main__":
-    ray.init(runtime_env={"py_modules": [cifar], "conda": "ray"})
-    main("simple_cnn_arch")
+    args = u.parse_args()
+    u.ray_connect(args)
+    main(args.pipeline_config)

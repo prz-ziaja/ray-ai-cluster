@@ -5,8 +5,7 @@ import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
 import ray
-
-from cifar.utils import function_builder
+import utils as u
 
 ray.init(
     _system_config={
@@ -37,7 +36,7 @@ def main(dataset_module_name):
     dataset = source_loader(**source_loader_args)
 
     for plugin_module, plugin_name, plugin_args in dataset_module.plugins:
-        plugin = function_builder(
+        plugin = u.function_builder(
             importlib.import_module(plugin_module).__getattribute__(plugin_name),
             **plugin_args
         )
@@ -52,4 +51,6 @@ def main(dataset_module_name):
 
 
 if __name__ == "__main__":
-    main("cifar.io.datasets.hsv_ds_00")
+    args = u.parse_args()
+    u.ray_connect(args)
+    main(args.pipeline_config)
