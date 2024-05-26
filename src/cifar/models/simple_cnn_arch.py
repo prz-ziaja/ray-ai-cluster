@@ -25,7 +25,9 @@ class Model(pl.LightningModule):
         self.eval_loss = []
         self.eval_preds = []
         self.eval_true = []
-        self.loss_function = config["loss_function"]#nn.CrossEntropyLoss()#HingeEmbeddingLoss()
+        self.loss_function = config[
+            "loss_function"
+        ]  # nn.CrossEntropyLoss()#HingeEmbeddingLoss()
 
     def compute_loss(self, logits, labels):
         return self.loss_function(logits, labels)
@@ -70,7 +72,6 @@ class Model(pl.LightningModule):
 
         self.eval_preds.append(logits.argmax(dim=-1))
         self.eval_true.append(y)
-        
 
     def on_validation_epoch_end(self):
         avg_loss = torch.stack(self.eval_loss).cpu().mean()
@@ -80,7 +81,7 @@ class Model(pl.LightningModule):
         f1_score = -classification_report(
             torch.cat(self.eval_true).cpu(),
             torch.cat(self.eval_preds).cpu(),
-            output_dict=True
+            output_dict=True,
         )["weighted avg"]["f1-score"]
         self.log("val_neg_f1", f1_score, sync_dist=True)
         self.eval_preds.clear()

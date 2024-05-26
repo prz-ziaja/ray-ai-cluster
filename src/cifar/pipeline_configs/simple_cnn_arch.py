@@ -1,5 +1,5 @@
-from ray import tune
 import torch.nn as nn
+from ray import tune
 
 preprocessing = {
     "dataset_name": "hsv_ds_00",
@@ -11,7 +11,7 @@ training = {
     "model_name": "simple_cnn_arch",
     "scaling_config": {
         "num_workers": 1,
-        #"resources_per_worker": {"CPU": 3},
+        # "resources_per_worker": {"CPU": 3},
         "resources_per_worker": {"GPU": 0.4},
         "use_gpu": True,
     },
@@ -23,6 +23,6 @@ training = {
         "kernel_size": 3,
         "stride": 2,
         "batch_size": 128,
-        "loss_function": tune.choice([nn.CrossEntropyLoss(), nn.MultiMarginLoss()])
+        "loss_function": tune.choice([nn.CrossEntropyLoss(), nn.MultiMarginLoss()]),
     },
 }

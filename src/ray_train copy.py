@@ -2,6 +2,7 @@ import importlib
 
 import lightning.pytorch as pl
 import mlflow
+import mnist
 import ray
 from ray import train, tune
 from ray.air.integrations.mlflow import MLflowLoggerCallback, setup_mlflow
@@ -15,8 +16,6 @@ from ray.train.lightning import (
 from ray.train.torch import TorchConfig, TorchTrainer
 from ray.tune.schedulers import ASHAScheduler
 
-import mnist
-
 
 def build_train_func(model_module, data_module, data_location, experiment_name):
     def train_func(config):
@@ -28,13 +27,13 @@ def build_train_func(model_module, data_module, data_location, experiment_name):
         model = model_module.Model(config)
 
         setup_mlflow(
-           config,
-           experiment_name=experiment_name,
-           #ctx.get_experiment_name()   ctx.get_local_world_size()  ctx.get_node_rank()         ctx.get_trial_dir()         ctx.get_trial_name()        ctx.get_world_rank()
-           #ctx.get_local_rank()        ctx.get_metadata()          ctx.get_storage()           ctx.get_trial_id()          ctx.get_trial_resources()   ctx.get_world_size()
-           run_name=train.get_context().get_trial_name(),
-           tracking_uri="http://127.0.0.1:5000",
-           #tags={"trial_dir":train.get_context().get_trial_dir()}
+            config,
+            experiment_name=experiment_name,
+            # ctx.get_experiment_name()   ctx.get_local_world_size()  ctx.get_node_rank()         ctx.get_trial_dir()         ctx.get_trial_name()        ctx.get_world_rank()
+            # ctx.get_local_rank()        ctx.get_metadata()          ctx.get_storage()           ctx.get_trial_id()          ctx.get_trial_resources()   ctx.get_world_size()
+            run_name=train.get_context().get_trial_name(),
+            tracking_uri="http://127.0.0.1:5000",
+            # tags={"trial_dir":train.get_context().get_trial_dir()}
         )
         mlflow.pytorch.autolog()
 
@@ -81,11 +80,14 @@ def main(module_name):
     dataset_module = importlib.import_module(f"mnist.io.datasets.{dataset_name}")
 
     data_location = dataset_module.output_path
-    #mlflow.set_tracking_uri("http://127.0.0.1:5000")
-    #mlflow.set_experiment(model_name)
+    # mlflow.set_tracking_uri("http://127.0.0.1:5000")
+    # mlflow.set_experiment(model_name)
 
     train_func = build_train_func(
-        model_module, dataset_module.dataloader, data_location, experiment_name=model_name
+        model_module,
+        dataset_module.dataloader,
+        data_location,
+        experiment_name=model_name,
     )
 
     # The maximum training epochs
