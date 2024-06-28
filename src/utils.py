@@ -50,10 +50,13 @@ def function_builder(func, **kwargs):
 def ray_connect(args):
     pipeline_module = import_module(args.pipeline_module)
 
-    ray.init(
-        args.remote_host,
-        runtime_env={"py_modules": [pipeline_module], "conda": args.conda_env},
-    )
+    if 'remote_host' in args:
+        ray.init(
+            args.remote_host,
+            runtime_env={"py_modules": [pipeline_module], "conda": args.conda_env},
+        )
+    else:
+        ray.init()
 
 
 if __name__ == "__main__":
