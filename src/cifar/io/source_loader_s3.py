@@ -2,7 +2,6 @@ import numpy as np
 import ray
 
 from cifar.io.utils import get_s3_fs
-from cifar.utils import function_builder
 
 
 def list_s3_dir(dir_path, fs, extension=""):
@@ -43,7 +42,6 @@ def ray_read_s3_file_cifar(row, fs):
     data = np.load(
         fs.open(
             s3_file,
-            # "/ray/cifar/raw/data_batch_1.npy"
         ),
         allow_pickle=True,
     ).item()
@@ -58,7 +56,7 @@ def ray_read_cifar_raw(dir_path):
     fs = get_s3_fs()
     files = ray.data.from_items(list_s3_dir(dir_path, fs, ".npy"))
     dataset = files.map_batches(
-        function_builder(ray_read_s3_file_cifar, fs=fs), batch_size=1
+        lambda x: ray_read_s3_file_cifar(x, fs=fs), batch_size=1
     )
     return dataset
 

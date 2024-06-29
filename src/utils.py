@@ -38,26 +38,13 @@ def parse_args():
 
     return parsed
 
-
-def function_builder(func, **kwargs):
-    def inner(*inner_args, **inner_kwargs):
-        return func(*inner_args, **kwargs, **inner_kwargs)
-
-    inner.__name__ = func.__name__
-    return inner
-
-
 def ray_connect(args):
     pipeline_module = import_module(args.pipeline_module)
 
-    if 'remote_host' in args:
-        ray.init(
-            args.remote_host,
-            runtime_env={"py_modules": [pipeline_module], "conda": args.conda_env},
-        )
-    else:
-        ray.init()
-
+    ray.init(
+        args.remote_host,
+        runtime_env={"py_modules": [pipeline_module], "conda": args.conda_env},
+    )
 
 if __name__ == "__main__":
     args = parse_args()
