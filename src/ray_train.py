@@ -16,6 +16,7 @@ from ray.train.torch import TorchConfig, TorchTrainer
 from ray.tune.schedulers import ASHAScheduler
 
 import utils as u
+from cifar.io.utils import get_s3_fs_pa
 
 
 def build_train_func(model_module, data_module, data_location, experiment_name):
@@ -33,7 +34,7 @@ def build_train_func(model_module, data_module, data_location, experiment_name):
             # ctx.get_experiment_name()   ctx.get_local_world_size()  ctx.get_node_rank()         ctx.get_trial_dir()         ctx.get_trial_name()        ctx.get_world_rank()
             # ctx.get_local_rank()        ctx.get_metadata()          ctx.get_storage()           ctx.get_trial_id()          ctx.get_trial_resources()   ctx.get_world_size()
             run_name=train.get_context().get_trial_name(),
-            tracking_uri="http://127.0.0.1:5000",
+            tracking_uri="http://tracking_server:5000",
             # tags={"trial_dir":train.get_context().get_trial_dir()}
         )
         mlflow.pytorch.autolog()
@@ -98,6 +99,8 @@ def main(module_name):
     scaling_config = ScalingConfig(**scaling_config)
 
     run_config = RunConfig(
+        storage_path="ray/ray_results",
+        storage_filesystem=get_s3_fs_pa(),
         checkpoint_config=CheckpointConfig(
             num_to_keep=2,
             checkpoint_score_attribute="val_neg_f1",
