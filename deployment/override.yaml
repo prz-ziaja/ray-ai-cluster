@@ -1,0 +1,31 @@
+image:
+  repository: ray_image
+  tag: latest
+  pullPolicy: IfNotPresent
+
+head:
+  resources:
+    limits:
+      cpu: 1
+      memory: "2G"
+    requests:
+      cpu: 1
+      memory: "2G"
+
+worker:
+  resources:
+    limits:
+      cpu: 2
+      memory: "5G"
+    requests:
+      cpu: 2
+      memory: "5G"
+
+additionalWorkerGroups:
+  resources:
+    limits:
+      cpu: 2
+      memory: "5G"
+    requests:
+      cpu: 2
+      memory: "5G"

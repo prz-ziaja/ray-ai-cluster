@@ -3,7 +3,7 @@ from cifar.constants.secret import s3_secrets
 from cifar.io.dataloaders.npy_loader import customDataModule
 
 input_path = "/ray/cifar/raw/"
-output_path = "/ray/cifar/hsv_ds_00/"
+output_path = "ray/cifar/hsv_ds_00/"
 dataloader = customDataModule
 
 keys_to_save = [

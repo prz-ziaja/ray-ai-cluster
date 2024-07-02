@@ -17,7 +17,8 @@ from ray.tune.schedulers import ASHAScheduler
 
 import utils as u
 from cifar.io.utils import get_s3_fs_pa
-
+import cifar.constants.secret as secret
+import os
 
 def build_train_func(model_module, data_module, data_location, experiment_name):
     def train_func(config):
@@ -28,13 +29,16 @@ def build_train_func(model_module, data_module, data_location, experiment_name):
         )
         model = model_module.Model(config)
 
+        os.environ['MLFLOW_TRACKING_PASSWORD'] = secret.MLFLOW_TRACKING_PASSWORD
+        os.environ['MLFLOW_TRACKING_USERNAME'] = secret.MLFLOW_TRACKING_USERNAME
+
         setup_mlflow(
             config,
             experiment_name=experiment_name,
             # ctx.get_experiment_name()   ctx.get_local_world_size()  ctx.get_node_rank()         ctx.get_trial_dir()         ctx.get_trial_name()        ctx.get_world_rank()
             # ctx.get_local_rank()        ctx.get_metadata()          ctx.get_storage()           ctx.get_trial_id()          ctx.get_trial_resources()   ctx.get_world_size()
             run_name=train.get_context().get_trial_name(),
-            tracking_uri="http://tracking_server:5000",
+            tracking_uri=secret.MLFLOW_TRACKING_URI,
             # tags={"trial_dir":train.get_context().get_trial_dir()}
         )
         mlflow.pytorch.autolog()

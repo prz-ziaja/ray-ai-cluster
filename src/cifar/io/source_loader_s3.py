@@ -1,7 +1,7 @@
 import numpy as np
 import ray
 
-from cifar.io.utils import get_s3_fs
+from cifar.io.utils import get_s3_fs, get_s3_fs_pa
 
 
 def list_s3_dir(dir_path, fs, extension=""):
@@ -62,5 +62,5 @@ def ray_read_cifar_raw(dir_path):
 
 
 def ray_write_results(dataset, dir_path, columns):
-    fs = get_s3_fs()
+    fs = get_s3_fs_pa()
     dataset.write_numpy(dir_path, column=columns, filesystem=fs)
