@@ -112,14 +112,19 @@ services:
     env_file:
       - .env
     command: bash -c "ray start --address=ray-head:${REDISPORT} --redis-password=${REDISPASSWORD} --num-cpus=${NUM_CPU_WORKER} --block" 
-    shm_size: 2g
+    shm_size: 5g
     deploy:
       mode: replicated
       replicas: ${NUM_WORKERS} 
       resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
         limits:
           cpus: ${NUM_CPU_WORKER}
-          memory: '2g'
+          memory: '5g'
     networks:
       - backend
 
