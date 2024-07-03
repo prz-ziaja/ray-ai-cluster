@@ -10,7 +10,7 @@ minikube start --driver docker --container-runtime docker --gpus all --cpus 15 -
 Before you set up ray it is required to build image for ray and upload it minikube
 ```
 eval $(minikube docker-env)
-docker build -t ray_image .
+docker build -f dockerfile_ray -t ray_image .
 ```
 Now you can deploy ray and mlflow.
 ```
