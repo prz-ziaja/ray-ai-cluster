@@ -17,7 +17,7 @@ MLFLOW_TRACKING_PASSWORD = ''
 ######################################
 # kubernetes
 
-MLFLOW_TRACKING_URI = "http://mlflow-tracking:5000"
+MLFLOW_TRACKING_URI = "http://mlflow-tracking"
 MLFLOW_TRACKING_USERNAME = '...'
 MLFLOW_TRACKING_PASSWORD = '...'
 

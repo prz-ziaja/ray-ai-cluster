@@ -2,17 +2,20 @@ image:
   repository: ray_image
   tag: latest
   pullPolicy: IfNotPresent
-
+  
 head:
   resources:
     limits:
-      cpu: 1
-      memory: "2G"
+      nvidia.com/gpu: 1
+      cpu: 14
+      memory: "12G"
     requests:
-      cpu: 1
-      memory: "2G"
+      nvidia.com/gpu: 1
+      cpu: 14
+      memory: "12G"
 
 worker:
+  disabled: true
   resources:
     limits:
       nvidia.com/gpu: 1
@@ -24,10 +27,12 @@ worker:
       memory: "5G"
 
 additionalWorkerGroups:
-  resources:
-    limits:
-      cpu: 2
-      memory: "5G"
-    requests:
-      cpu: 2
-      memory: "5G"
+  smallGroup:
+    disabled: true
+    resources:
+      limits:
+        cpu: 2
+        memory: "5G"
+      requests:
+        cpu: 2
+        memory: "5G"
