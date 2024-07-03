@@ -15,9 +15,11 @@ head:
 worker:
   resources:
     limits:
+      nvidia.com/gpu: 1
       cpu: 2
       memory: "5G"
     requests:
+      nvidia.com/gpu: 1
       cpu: 2
       memory: "5G"
 
