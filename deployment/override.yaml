@@ -7,11 +7,11 @@ head:
   resources:
     limits:
       nvidia.com/gpu: 1
-      cpu: 14
+      cpu: 12
       memory: "12G"
     requests:
       nvidia.com/gpu: 1
-      cpu: 14
+      cpu: 12
       memory: "12G"
 
 worker:

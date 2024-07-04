@@ -1,9 +1,20 @@
 init:
 	mkdir -p data/mlflow_minio data/mlflow_postgres data/tensorboard
 
-start-deployment:
+start-dc-deployment:
 	docker compose -f deployment/docker-compose.yaml --env-file deployment/.env up -d --build
-restart-deployment:
+restart-dc-deployment:
 	docker compose -f deployment/docker-compose.yaml --env-file deployment/.env restart
-stop-deployment:
+stop-dc-deployment:
 	docker compose -f deployment/docker-compose.yaml --env-file deployment/.env stop
+
+start-k8s-deployment:
+	eval $(minikube docker-env)
+	docker build -f ./deployment/dockerfile_ray -t ray_image ./deployment/
+	helm install mlflow oci://registry-1.docker.io/bitnamicharts/mlflow
+	helm repo add kuberay https://ray-project.github.io/kuberay-helm/
+	helm repo update
+	helm install kuberay-operator kuberay/kuberay-operator --version 1.1.1
+	helm install -f ./deployment/override.yaml  raycluster kuberay/ray-cluster --version 1.1.1
+stop-k8s-deployment:
+	echo 0	
