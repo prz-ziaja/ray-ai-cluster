@@ -1,4 +1,5 @@
 import importlib
+import os
 
 import lightning.pytorch as pl
 import mlflow
@@ -15,10 +16,10 @@ from ray.train.lightning import (
 from ray.train.torch import TorchConfig, TorchTrainer
 from ray.tune.schedulers import ASHAScheduler
 
+import cifar.constants.secret as secret
 import utils as u
 from cifar.io.utils import get_s3_fs_pa
-import cifar.constants.secret as secret
-import os
+
 
 def build_train_func(model_module, data_module, data_location, experiment_name):
     def train_func(config):
@@ -29,8 +30,8 @@ def build_train_func(model_module, data_module, data_location, experiment_name):
         )
         model = model_module.Model(config)
 
-        os.environ['MLFLOW_TRACKING_PASSWORD'] = secret.MLFLOW_TRACKING_PASSWORD
-        os.environ['MLFLOW_TRACKING_USERNAME'] = secret.MLFLOW_TRACKING_USERNAME
+        os.environ["MLFLOW_TRACKING_PASSWORD"] = secret.MLFLOW_TRACKING_PASSWORD
+        os.environ["MLFLOW_TRACKING_USERNAME"] = secret.MLFLOW_TRACKING_USERNAME
 
         setup_mlflow(
             config,

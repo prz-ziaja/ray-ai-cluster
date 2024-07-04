@@ -38,6 +38,7 @@ def parse_args():
 
     return parsed
 
+
 def ray_connect(args):
     pipeline_module = import_module(args.pipeline_module)
 
@@ -45,6 +46,7 @@ def ray_connect(args):
         args.remote_host,
         runtime_env={"py_modules": [pipeline_module], "conda": args.conda_env},
     )
+
 
 if __name__ == "__main__":
     args = parse_args()

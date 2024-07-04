@@ -6,6 +6,7 @@ import ray
 
 from utils import parse_args, ray_connect
 
+
 @ray.remote
 def main(dataset_module_name):
     def function_builder(func, **kwargs):
