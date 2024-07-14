@@ -15,6 +15,7 @@ from ray.train.lightning import (
 )
 from ray.train.torch import TorchConfig, TorchTrainer
 from ray.tune.schedulers import ASHAScheduler
+from ray.tune.search.optuna import OptunaSearch
 
 import cifar.constants.secret as secret
 import utils as u
@@ -41,6 +42,7 @@ def build_train_func(model_module, data_module, data_location, experiment_name):
             run_name=train.get_context().get_trial_name(),
             tracking_uri=secret.MLFLOW_TRACKING_URI,
             # tags={"trial_dir":train.get_context().get_trial_dir()}
+            create_experiment_if_not_exists=True
         )
         mlflow.pytorch.autolog()
 
@@ -60,6 +62,7 @@ def build_train_func(model_module, data_module, data_location, experiment_name):
 
 def tune_hms_asha(ray_trainer, search_space, num_epochs, num_samples=10):
     scheduler = ASHAScheduler(max_t=num_epochs, grace_period=1, reduction_factor=2)
+    algo = OptunaSearch()
 
     tuner = tune.Tuner(
         ray_trainer,
@@ -68,6 +71,7 @@ def tune_hms_asha(ray_trainer, search_space, num_epochs, num_samples=10):
             metric="val_neg_f1",
             mode="min",
             num_samples=num_samples,
+            search_alg=algo,
             scheduler=scheduler,
         ),
     )
