@@ -8,6 +8,10 @@ restart-dc-deployment:
 stop-dc-deployment:
 	docker compose -f deployment/docker-compose.yaml --env-file deployment/.env stop
 
+start-minikube:
+	sudo nvidia-ctk runtime configure --runtime=docker && sudo systemctl restart docker
+	minikube start --driver docker --container-runtime docker --gpus all --cpus 15 --memory 13312
+
 start-k8s-deployment:
 	eval $(minikube docker-env)
 	docker build -f ./deployment/dockerfile_ray -t ray_image ./deployment/
