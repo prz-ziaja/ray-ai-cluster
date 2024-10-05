@@ -1,7 +1,7 @@
 import numpy as np
-import ray
+import pandas as pd
 
-from cifar.io.utils import get_s3_fs, get_s3_fs_pa
+from cifar.io.utils import get_s3_fs
 
 
 def list_s3_dir(dir_path, fs, extension=""):
@@ -11,6 +11,11 @@ def list_s3_dir(dir_path, fs, extension=""):
         if extension in file_path["name"]
     ]
 
+def ray_list_cifar_files(dir_path):
+    fs = get_s3_fs()
+    files = list_s3_dir(dir_path, fs, ".npy")
+    return pd.DataFrame({"file_name": files})
+
 
 def read_dir(dir_path):
     fs = get_s3_fs()
@@ -19,48 +24,3 @@ def read_dir(dir_path):
         np.load(fs.open(npy_file), allow_pickle=True).item() for npy_file in files
     ]
     return loaded_data
-
-
-def read_s3_file____(row, fs):
-    s3_file = row["item"][0]
-    data = np.load(
-        fs.open(
-            s3_file,
-            # "/ray/cifar/raw/data_batch_1.npy"
-        ),
-        allow_pickle=True,
-    ).item()
-
-    data["data"] = data["data"].reshape([-1, 3, 32, 32]).astype(np.float32)
-    data["labels"] = data["labels"].reshape([-1, 1])
-    data["test"] = np.array(["test" in s3_file.lower()] * len(data["data"]))
-    return data
-
-
-def ray_read_s3_file_cifar(row, fs):
-    s3_file = row["item"][0]
-    data = np.load(
-        fs.open(
-            s3_file,
-        ),
-        allow_pickle=True,
-    ).item()
-
-    data["data"] = data["data"].reshape([-1, 3, 32, 32]).astype(np.float32)
-    data["labels"] = np.array(data["labels"], dtype=np.int32).reshape([-1, 1])
-    data["test"] = np.array(["test" in s3_file.lower()] * len(data["data"]))
-    return data
-
-
-def ray_read_cifar_raw(dir_path):
-    fs = get_s3_fs()
-    files = ray.data.from_items(list_s3_dir(dir_path, fs, ".npy"))
-    dataset = files.map_batches(
-        lambda x: ray_read_s3_file_cifar(x, fs=fs), batch_size=1
-    )
-    return dataset
-
-
-def ray_write_results(dataset, dir_path, columns):
-    fs = get_s3_fs_pa()
-    dataset.write_numpy(dir_path, column=columns, filesystem=fs)
