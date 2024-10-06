@@ -22,3 +22,14 @@ start-k8s-deployment:
 	helm install -f ./deployment/override.yaml  raycluster kuberay/ray-cluster --version 1.1.1
 stop-k8s-deployment:
 	echo 0	
+
+start-local:
+	mkdir -p run
+	cd run
+	ray start --head
+	nohup mlflow ui > mlflow.log &
+
+stop-local:
+	ray stop
+	echo "you have to manually kill following processes"
+	ps -aux | grep mlflow
