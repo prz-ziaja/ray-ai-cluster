@@ -1,4 +1,4 @@
-FROM rayproject/ray:2.31.0.1240d3-py311-cu121
+FROM rayproject/ray:2.50.0.276c75-extra-py312-cu128
 
 COPY conda-environments ./conda-environments
 RUN ./conda-environments/create-conda-envs.sh

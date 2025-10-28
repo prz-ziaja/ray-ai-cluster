@@ -130,6 +130,34 @@ services:
     networks:
       - backend
 
+  jupyter_notebook:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: dockerfile_ray
+    image: ray_image
+    ports:
+      - "${JUPYTER_NOTEBOOK_PORT}:${JUPYTER_NOTEBOOK_PORT}"
+    env_file:
+      - .env
+    command: jupyter notebook --ip 0.0.0.0 --no-browser
+    shm_size: 5g
+    deploy:
+      mode: replicated
+      replicas: ${NUM_WORKERS} 
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+        limits:
+          cpus: '1'
+          memory: '5g'
+    networks:
+      - backend
+
+
 
 volumes:
   db_data:
