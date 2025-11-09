@@ -136,6 +136,8 @@ services:
       context: .
       dockerfile: dockerfile_ray
     image: ray_image
+    volumes:
+      - ../notebooks/:./notebooks
     ports:
       - "${JUPYTER_NOTEBOOK_PORT}:${JUPYTER_NOTEBOOK_PORT}"
     env_file:
