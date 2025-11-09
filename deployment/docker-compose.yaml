@@ -142,7 +142,7 @@ services:
       - "${JUPYTER_NOTEBOOK_PORT}:${JUPYTER_NOTEBOOK_PORT}"
     env_file:
       - .env
-    command: bash -c "conda activate {JUPYTER_ENV_NAME}; jupyter notebook --ip 0.0.0.0 --no-browser"
+    command: bash -c "source /opt/conda/etc/profile.d/conda.sh && conda activate ${JUPYTER_ENV_NAME} && jupyter notebook --ip 0.0.0.0 --no-browser"
     deploy:
       resources:
         reservations:
