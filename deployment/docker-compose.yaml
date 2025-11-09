@@ -140,7 +140,7 @@ services:
       - "${JUPYTER_NOTEBOOK_PORT}:${JUPYTER_NOTEBOOK_PORT}"
     env_file:
       - .env
-    command: jupyter notebook --ip 0.0.0.0 --no-browser
+    command: bash -c "jupyter notebook --ip 0.0.0.0 --no-browser"
     deploy:
       resources:
         reservations:
