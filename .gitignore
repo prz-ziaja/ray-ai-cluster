@@ -1,6 +1,7 @@
 *.pyc
 .tox
 notebooks/cifar/*
+notebooks/secrets/*
 data/*
 .idea/
 # Secrets
